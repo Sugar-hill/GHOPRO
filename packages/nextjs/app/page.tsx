@@ -1,20 +1,78 @@
 "use client";
-
+import * as React from "react";
+import { parseEther } from "viem";
+import { useWriteContract } from "wagmi";
+import DeployedContracts from "~~/contracts/deployedContracts";
+import { useTransactor } from "~~/hooks/scaffold-eth";
+import { useState } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
-import {useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract"
+import {useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 const Home: NextPage = () => {
+
+  
   const { address: connectedAddress } = useAccount();
-  const tokenAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+
+  const tokenAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+
+
+  const { writeContractAsync, isPending } = useWriteContract();
+
   const { data: tokenPrice, isLoading: isPriceLoading} = useScaffoldReadContract({
     contractName : "RWAOracle",
     functionName :"getPrice",
     args: [tokenAddress],
     watch: true, // Watches for updates in real time on new blocks
   });
+  
+
+    // State for minting tokens
+     const [mintDetails, setMintDetails] = useState({ to: "", amount: 0 });
+
+    // Read total supply of the token
+    const { data: totalSupply, isLoading: isTotalSupplyLoading } = useScaffoldReadContract({
+      contractName: "MockRWAToken",
+      functionName: "totalSupply",
+    });
+  
+    // Read balance of the connected wallet
+    const { data: userBalance, isLoading: isUserBalanceLoading } = useScaffoldReadContract({
+      contractName: "MockRWAToken",
+      functionName: "balanceOf",
+      args: [connectedAddress],
+    });
+  
+    
+
+  const writeContractAsyncWithParams = () =>
+    writeContractAsync({
+      address: DeployedContracts[31337].MockRWAToken.address,
+      abi: DeployedContracts[31337].MockRWAToken.abi,
+      functionName: "mint",
+      args: [mintDetails.to, parseEther(mintDetails.amount.toString())], // Convert amount to the correct format
+    });
+
+  const writeTx = useTransactor();
+
+  const handleMintTokens = async () => {
+    if (!mintDetails.to || mintDetails.amount <= 0) {
+      alert("Please provide a valid address and a positive amount.");
+      return;
+    }
+
+    try {
+      await writeTx(writeContractAsyncWithParams, { blockConfirmations: 1 });
+      alert("Tokens minted successfully!");
+    } catch (e) {
+      console.error("Error minting tokens:", e);
+      alert("Failed to mint tokens.");
+    }
+  };
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -69,6 +127,52 @@ const Home: NextPage = () => {
         </div>
       </div>
     </div>
+
+    <div className="card-actions items-center flex-col gap-2 text-lg">
+          {/* Total Supply */}
+          <h2 className="font-bold m-0">Total Supply:</h2>
+          {isTotalSupplyLoading ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            <p className="m-0">{totalSupply ? totalSupply.toString() : 0}</p>
+          )}
+
+          {/* User Balance */}
+          <h2 className="font-bold m-0">Your Balance:</h2>
+          {isUserBalanceLoading ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            <p className="m-0">{userBalance ? userBalance.toString() : 0}</p>
+          )}
+
+          {/* Mint Tokens */}
+          <div className="card-body items-center text-center">
+        <h2 className="card-title">Mint Mock RWA Tokens</h2>
+        <div className="card-actions items-center flex-col gap-2 text-lg">
+          <input
+            type="text"
+            placeholder="Recipient Address"
+            className="input input-bordered w-full my-2"
+            value={mintDetails.to}
+            onChange={(e) => setMintDetails({ ...mintDetails, to: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Amount"
+            className="input input-bordered w-full my-2"
+            value={mintDetails.amount}
+            onChange={(e) => setMintDetails({ ...mintDetails, amount: Number(e.target.value) })}
+          />
+          <button
+            className={`btn btn-primary ${isPending ? "loading" : ""}`}
+            onClick={handleMintTokens}
+            disabled={isPending}
+          >
+            {isPending ? <span className="loading loading-spinner loading-sm"></span> : "Mint Tokens"}
+          </button>
+        </div>
+      </div>
+        </div>
         </div>
       </div>
     </>
@@ -76,4 +180,5 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
 
