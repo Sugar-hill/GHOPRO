@@ -12,7 +12,87 @@ import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 import {useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+
 const Home: NextPage = () => {
+
+  const [loanDetails, setLoanDetails] = useState({
+    token: "",
+    amount: 0,
+    collateral: 0,
+  });
+  const [loanId, setLoanId] = useState<number | null>(null);
+
+  const createLoanWrite = useWriteContract();
+  const repayLoanWrite = useWriteContract();
+  const liquidateLoanWrite = useWriteContract();
+  // const readContract = useReadContract();
+
+  const tx = useTransactor();
+
+  const handleCreateLoan = async () => {
+    try {
+      await tx(
+        createLoanWrite.writeContractAsync({
+          address: DeployedContracts[31337].LendingPool.address,
+          abi: DeployedContracts[31337].LendingPool.abi,
+          functionName: "createLoan",
+          args: [loanDetails.token, loanDetails.amount, loanDetails.collateral],
+        }),
+        { blockConfirmations: 1 }
+      );
+      alert("Loan created successfully!");
+    } catch (error) {
+      console.error("Error creating loan:", error);
+      alert("Failed to create loan.");
+    }
+  };
+
+  const handleRepayLoan = async () => {
+    if (loanId === null) {
+      alert("Please provide a valid Loan ID.");
+      return;
+    }
+
+    try {
+      await tx(
+        repayLoanWrite.writeContractAsync({
+          address: DeployedContracts[31337].LendingPool.address,
+          abi: DeployedContracts[31337].LendingPool.abi,
+          functionName: "repayLoan",
+          args: [loanId],
+        }),
+        { blockConfirmations: 1 }
+      );
+      alert("Loan repaid successfully!");
+    } catch (error) {
+      console.error("Error repaying loan:", error);
+      alert("Failed to repay loan.");
+    }
+  };
+
+  const handleLiquidateLoan = async () => {
+    if (loanId === null) {
+      alert("Please provide a valid Loan ID.");
+      return;
+    }
+
+    try {
+      await tx(
+        liquidateLoanWrite.writeContractAsync({
+          address: DeployedContracts[31337].LendingPool.address,
+          abi: DeployedContracts[31337].LendingPool.abi,
+          functionName: "liquidateLoan",
+          args: [loanId],
+        }),
+        { blockConfirmations: 1 }
+      );
+      alert("Loan liquidated successfully!");
+    } catch (error) {
+      console.error("Error liquidating loan:", error);
+      alert("Failed to liquidate loan.");
+    }
+  };
+
 
   
   const { address: connectedAddress } = useAccount();
@@ -174,6 +254,72 @@ const Home: NextPage = () => {
       </div>
         </div>
         </div>
+
+        <div className="card-body">
+        <h2 className="card-title">Lending Pool Interaction</h2>
+
+        {/* Create Loan */}
+        <div className="my-4">
+          <h3 className="font-bold">Create Loan</h3>
+          <input
+            type="text"
+            placeholder="Token Address"
+            className="input input-bordered w-full my-2"
+            value={loanDetails.token}
+            onChange={(e) => setLoanDetails({ ...loanDetails, token: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Loan Amount"
+            className="input input-bordered w-full my-2"
+            value={loanDetails.amount}
+            onChange={(e) => setLoanDetails({ ...loanDetails, amount: Number(e.target.value) })}
+          />
+          <input
+            type="number"
+            placeholder="Collateral Amount"
+            className="input input-bordered w-full my-2"
+            value={loanDetails.collateral}
+            onChange={(e) => setLoanDetails({ ...loanDetails, collateral: Number(e.target.value) })}
+          />
+          <button className="btn btn-primary" onClick={handleCreateLoan}>
+            Create Loan
+          </button>
+        </div>
+
+        {/* Repay Loan */}
+        <div className="my-4">
+          <h3 className="font-bold">Repay Loan</h3>
+          <input
+            type="number"
+            placeholder="Loan ID"
+            className="input input-bordered w-full my-2"
+            value={loanId !== null ? loanId : ""}
+            onChange={(e) => setLoanId(Number(e.target.value))}
+          />
+          <button className="btn btn-primary" onClick={handleRepayLoan}>
+            Repay Loan
+          </button>
+        </div>
+
+        {/* Liquidate Loan */}
+        <div className="my-4">
+          <h3 className="font-bold">Liquidate Loan</h3>
+          <input
+            type="number"
+            placeholder="Loan ID"
+            className="input input-bordered w-full my-2"
+            value={loanId !== null ? loanId : ""}
+            onChange={(e) => setLoanId(Number(e.target.value))}
+          />
+          <button className="btn btn-primary" onClick={handleLiquidateLoan}>
+            Liquidate Loan
+          </button>
+        </div>
+      </div>
+
+
+
       </div>
     </>
   );
