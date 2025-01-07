@@ -1,21 +1,64 @@
-# 🏗 Scaffold-ETH 2
+# GHO-PRO
 
 <h4 align="center">
   <a href="https://docs.scaffoldeth.io">Documentation</a> |
   <a href="https://scaffoldeth.io">Website</a>
 </h4>
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+# 🌍 Real Estate-Backed Lending Platform
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+A blockchain-based lending protocol that allows users to secure loans by tokenizing real-world assets (RWAs) like real estate. This platform ensures transparency, traceability, and security through decentralized smart contracts. Users can tokenize their assets, set collateral, borrow funds, and repay loans seamlessly.
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+---
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+## ✨ Features
+- **Real-World Asset Tokenization**: Convert tangible assets (e.g., farmland, gold, real estate) into digital tokens.
+- **Collateralized Lending**: Borrow funds against tokenized assets as collateral.
+- **Oracle Integration**: Ensures real-time and accurate pricing of tokenized assets.
+- **Automated Liquidation**: Safeguards lenders by selling collateral if its value falls below the loan amount.
+- **Blockchain Transparency**: Immutable and traceable transactions.
+
+---
+
+## 🛠 Tech Stack
+- **Smart Contracts**: Built using Solidity for decentralized operations.
+  - `LendingPool.sol`: Handles loan creation, repayment, and liquidation.
+  - `RWAOracle.sol`: Manages real-time price feeds for tokenized assets.
+  - `MockRWAToken.sol`: Simulates tokenized real-world assets.
+- **Frontend**: 
+  - React.js for a seamless user interface.
+  - TailwindCSS for responsive design.
+- **Backend**:
+  - Node.js for API interactions.
+  - Express.js for server-side logic.
+- **Blockchain**: Deployed on the **Lens Protocol** for secure and decentralized asset management.
+- **Testing**: Hardhat and Mocha for robust smart contract testing.
+- **Deployment**: Deployed to Ethereum-compatible networks using Hardhat.
+
+---
+
+## 🚀 How It Works
+1. **Tokenization**: Users mint tokens representing their assets using `MockRWAToken`.
+2. **Collateralization**: Approve the `LendingPool` contract to hold collateral.
+3. **Loan Request**: Borrow funds by providing collateral. The loan is approved if the collateral value meets the requirement.
+4. **Repayment**: Repay the loan to retrieve collateral.
+5. **Liquidation**: Automatically liquidate collateral if its value drops below the loan amount.
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js
+- Yarn or npm
+- Hardhat
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/real-estate-lending-platform.git
+   cd real-estate-lending-platform
+
 
 ## Requirements
 
@@ -27,9 +70,9 @@ Before you begin, you need to install the following tools:
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+To get started with , follow the steps below:
 
-1. Install the latest version of Scaffold-ETH 2
+1. Install 
 
 ```
 npx create-eth@latest
@@ -64,25 +107,4 @@ yarn start
 
 Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
 
-**What's next**:
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
-
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
