@@ -24,7 +24,7 @@ A blockchain-based lending protocol that allows users to secure loans by tokeniz
 - **Smart Contracts**: Built using Solidity for decentralized operations.
   - `LendingPool.sol`: Handles loan creation, repayment, and liquidation.
   - `RWAOracle.sol`: Manages real-time price feeds for tokenized assets.
-  - `MockRWAToken.sol`: Simulates tokenized real-world assets.
+  - `MockRWAToken.sol`: Simulates tokenized real-world assets.Deployed at : https://block-explorer.testnet.lens.dev/address/0x8D2F2B42973b07b43eF2126281ab3721aaf88F09
 - **Frontend**: 
   - React.js for a seamless user interface.
   - TailwindCSS for responsive design.
